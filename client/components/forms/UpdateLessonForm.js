@@ -1,5 +1,4 @@
 import { Button, Progress, Switch } from "antd";
-import { CloseCircleFilled, CloseCircleOutlined } from "@ant-design/icons";
 import ReactPlayer from "react-player";
 
 const UpdateLessonForm = ({

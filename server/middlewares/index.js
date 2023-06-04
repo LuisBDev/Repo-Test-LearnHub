@@ -28,9 +28,9 @@ export const isEnrolled = async (req, res, next) => {
 
         // Verificar si el id del curso se encuentra en el array de cursos del usuario
         let ids = [];
-        for (let i = 0; i < user.courses.length; i++) {
-            ids.push(user.courses[i].toString());
-        }
+        user.courses.forEach((courseId) => {
+            ids.push(courseId.toString());
+        });
 
         if (!ids.includes(course._id.toString())) {
             res.sendStatus(403);

@@ -1,27 +1,51 @@
-import { useState, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import InstructorRoute from "../../components/routes/InstructorRoute";
 import { Avatar, Tooltip } from "antd";
 import Link from "next/link";
 import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
+import { Context } from "../../context";
+import { toast } from "react-toastify";
 
 const InstructorIndex = () => {
+    const { state: { user } } = useContext(Context);
+
     const [courses, setCourses] = useState([]);
+    const [publishedCount, setPublishedCount] = useState(0);
 
     useEffect(() => {
+        const loadCourses = async () => {
+            try {
+                const response = await axios.get("/api/instructor-courses");
+                setCourses(response.data);
+            } catch (error) {
+                console.log("Error al cargar los cursos del instructor:", error);
+            }
+        };
+
         loadCourses();
     }, []);
 
-    const loadCourses = async () => {
-        try {
-            const response = await axios.get("/api/instructor-courses");
-            setCourses(response.data);
-        } catch (error) {
-            console.log("Error al cargar los cursos del instructor:", error);
-        }
-    };
-
     const myStyle = { marginTop: "-15px", fontSize: "10px" };
+
+    useEffect(() => {
+        if (user) {
+            const countPublishedCourses = courses.reduce((count, course) => {
+                if (course.published) {
+                    return count + 1;
+                } else {
+                    return count;
+                }
+            }, 0);
+            setPublishedCount(countPublishedCourses);
+        }
+    }, [user, courses]);
+
+    useEffect(() => {
+        if (user && publishedCount > 0) {
+            toast.success(`¡${user.name} tienes ${publishedCount} cursos publicados y ${(courses.length) - publishedCount} inactivo(s)!`);
+        }
+    }, [user, publishedCount]);
 
     return (
         <InstructorRoute>

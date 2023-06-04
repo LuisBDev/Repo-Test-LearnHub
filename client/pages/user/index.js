@@ -32,7 +32,7 @@ const UserIndex = () => {
 
     useEffect(() => {
         if (user) {
-            toast.success(`¡Bienvenido, ${user.name}!`);
+            toast.warning(`¡${user.name} tienes ${user.courses.length} cursos agregados en tu lista!`)
         }
     }, [user]);
 
