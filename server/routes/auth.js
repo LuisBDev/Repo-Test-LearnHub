@@ -7,12 +7,12 @@ import { requireSignin } from "../middlewares";
 
 // controllers
 import {
-  register,
-  login,
-  logout,
-  currentUser,
-  forgotPassword,
-  resetPassword,
+    register,
+    login,
+    logout,
+    currentUser,
+    forgotPassword,
+    resetPassword,
 } from "../controllers/auth";
 
 router.post("/register", register);

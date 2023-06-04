@@ -38,14 +38,14 @@ const TopNav = () => {
   };
 
   return (
-    <Menu mode="horizontal" selectedKeys={[current]} className="mb-2">
+    <Menu mode="horizontal" selectedKeys={[current]} className="mb-2" theme="dark">
       <Item
         key="/"
         onClick={(e) => setCurrent(e.key)}
         icon={<AppstoreOutlined />}
       >
         <Link href="/">
-          <a>Inicio</a>
+          <a>App</a>
         </Link>
       </Item>
 
@@ -66,7 +66,7 @@ const TopNav = () => {
           icon={<TeamOutlined />}
         >
           <Link href="/user/become-instructor">
-            <a>Convertirse en Instructor</a>
+            <a>Conviértete en Instructor</a>
           </Link>
         </Item>
       )}
@@ -80,7 +80,7 @@ const TopNav = () => {
             icon={<UserAddOutlined />}
           >
             <Link href="/register">
-              <a>Registrarse</a>
+              <a>Register</a>
             </Link>
           </Item>
 
@@ -91,7 +91,7 @@ const TopNav = () => {
             icon={<LoginOutlined />}
           >
             <Link href="/login">
-              <a>Iniciar Sesión</a>
+              <a>Login</a>
             </Link>
           </Item>
         </>
@@ -106,10 +106,10 @@ const TopNav = () => {
           <ItemGroup>
             <Item key="/user">
               <Link href="/user">
-                <a>Tablero</a>
+                <a>Dashboard</a>
               </Link>
             </Item>
-            <Item onClick={logout}>Cerrar Sesión</Item>
+            <Item onClick={logout}>Logout</Item>
           </ItemGroup>
         </SubMenu>
       )}

@@ -17,25 +17,25 @@ export const register = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-    // Validation
+    // Validación
     if (!name) {
-      return res.status(400).send("Name is required");
+      return res.status(400).send("El nombre es obligatorio");
     }
     if (!password || password.length < 6) {
       return res
         .status(400)
-        .send("Password is required and should be at least 6 characters long");
+        .send("La contraseña es obligatoria y debe tener al menos 6 caracteres");
     }
 
     const userExist = await User.findOne({ email }).exec();
     if (userExist) {
-      return res.status(400).send("Email is taken");
+      return res.status(400).send("El correo electrónico ya está en uso");
     }
 
-    // Hash password
+    // Encriptar contraseña
     const hashedPassword = await hashPassword(password);
 
-    // Register user
+    // Registrar usuario
     const user = new User({
       name,
       email,
@@ -46,7 +46,7 @@ export const register = async (req, res) => {
     return res.json({ ok: true });
   } catch (err) {
     console.log(err);
-    return res.status(400).send("Error. Try again.");
+    return res.status(400).send("Error. Inténtalo de nuevo.");
   }
 };
 
@@ -54,44 +54,44 @@ export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Check if user with the given email exists in the database
+    // Comprobar si existe un usuario con el correo electrónico proporcionado en la base de datos
     const user = await User.findOne({ email }).exec();
     if (!user) {
-      return res.status(400).send("No user found");
+      return res.status(400).send("Usuario no encontrado");
     }
 
-    // Check password
+    // Comprobar la contraseña
     const match = await comparePassword(password, user.password);
     if (!match) {
-      return res.status(400).send("Wrong password");
+      return res.status(400).send("Contraseña incorrecta");
     }
 
-    // Create signed JWT
+    // Crear JWT firmado
     const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "7d",
     });
 
-    // Exclude hashed password from the user object
+    // Excluir la contraseña encriptada del objeto de usuario
     user.password = undefined;
 
-    // Send token in a cookie
+    // Enviar el token en una cookie
     res.cookie("token", token, {
       httpOnly: true,
-      // secure: true, // only works on https
+      // secure: true, // solo funciona en HTTPS
     });
 
-    // Send user as JSON response
+    // Enviar el usuario como respuesta JSON
     res.json(user);
   } catch (err) {
     console.log(err);
-    return res.status(400).send("Error. Try again.");
+    return res.status(400).send("Error. Inténtalo de nuevo.");
   }
 };
 
 export const logout = async (req, res) => {
   try {
     res.clearCookie("token");
-    return res.json({ message: "Signout success" });
+    return res.json({ message: "Cierre de sesión exitoso" });
   } catch (err) {
     console.log(err);
   }
@@ -100,7 +100,7 @@ export const logout = async (req, res) => {
 export const currentUser = async (req, res) => {
   try {
     const user = await User.findById(req.user._id).select("-password").exec();
-    console.log("CURRENT_USER", user);
+    console.log("USUARIO_ACTUAL", user);
     return res.json({ ok: true });
   } catch (err) {
     console.log(err);
@@ -117,10 +117,10 @@ export const forgotPassword = async (req, res) => {
       { passwordResetCode: shortCode }
     );
     if (!user) {
-      return res.status(400).send("User not found");
+      return res.status(400).send("Usuario no encontrado");
     }
 
-    // Prepare email parameters
+    // Preparar los parámetros del correo electrónico
     const params = {
       Source: process.env.EMAIL_FROM,
       Destination: {
@@ -132,8 +132,8 @@ export const forgotPassword = async (req, res) => {
             Charset: "UTF-8",
             Data: `
               <html>
-                <h1>Reset password</h1>
-                <p>Use this code to reset your password</p>
+                <h1>Restablecer contraseña</h1>
+                <p>Utiliza este código para restablecer tu contraseña</p>
                 <h2 style="color:red;">${shortCode}</h2>
                 <i>edemy.com</i>
               </html>
@@ -142,7 +142,7 @@ export const forgotPassword = async (req, res) => {
         },
         Subject: {
           Charset: "UTF-8",
-          Data: "Reset Password",
+          Data: "Restablecer contraseña",
         },
       },
     };
@@ -180,6 +180,6 @@ export const resetPassword = async (req, res) => {
     res.json({ ok: true });
   } catch (err) {
     console.log(err);
-    return res.status(400).send("Error! Try again.");
+    return res.status(400).send("Error. Inténtalo de nuevo.");
   }
 };

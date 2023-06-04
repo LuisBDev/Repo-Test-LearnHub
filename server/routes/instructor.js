@@ -7,10 +7,10 @@ import { requireSignin } from "../middlewares";
 
 // controllers
 import {
-  makeInstructor,
-  getAccountStatus,
-  currentInstructor,
-  instructorCourses,
+    makeInstructor,
+    getAccountStatus,
+    currentInstructor,
+    instructorCourses,
 } from "../controllers/instructor";
 
 router.post("/make-instructor", requireSignin, makeInstructor);
