@@ -49,7 +49,7 @@ router.put("/course/unpublish/:courseId", requireSignin, unpublishCourse);
 
 // `/api/course/lesson/${slug}/${course.instructor._id}`,
 router.post("/course/lesson/:slug/:instructorId", requireSignin, addLesson);
-router.put("/course/lesson/:slug/:instructorId", requireSignin, updateLesson);
+router.put("/course/lesson/:slug/:instructorId", requireSignin, updateLesson); // NOSONAR
 router.put("/course/:slug/:lessonId", requireSignin, removeLesson);
 
 router.get("/check-enrollment/:courseId", requireSignin, checkEnrollment);

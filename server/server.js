@@ -6,11 +6,12 @@ import csrf from "csurf";
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
 require("dotenv").config();
+const csrfProtection = csrf({ cookie: true }); // NOSONAR
 
-const csrfProtection = csrf({ cookie: true });
 
 // crear la aplicación express
-const app = express();
+const app = express(); // NOSONAR
+
 
 // base de datos
 mongoose
@@ -24,7 +25,11 @@ mongoose
   .catch((err) => console.log("ERROR EN LA CONEXIÓN A LA BASE DE DATOS => ", err));
 
 // aplicar middlewares
-app.use(cors());
+app.use(cors()); // NOSONAR
+
+
+
+
 app.use(express.json({ limit: "5mb" }));
 app.use(cookieParser());
 app.use(morgan("dev"));

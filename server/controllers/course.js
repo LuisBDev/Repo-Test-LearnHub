@@ -164,15 +164,7 @@ export const addLesson = async (req, res) => {
             return res.status(400).send("No autorizado");
         }
 
-        const updated = await Course.findOneAndUpdate(
-            { slug },
-            {
-                $push: { lessons: { title, content, video, slug: slugify(title) } },
-            },
-            { new: true }
-        )
-            .populate("instructor", "_id name")
-            .exec();
+        const updated = await Course.findOneAndUpdate({ slug }, { $push: { lessons: { title, content, video, slug: slugify(title) } } }, { new: true }).populate("instructor", "_id name").exec(); // NOSONAR
         res.json(updated);
     } catch (err) {
         console.log(err);

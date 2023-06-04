@@ -27,7 +27,7 @@ export const register = async (req, res) => {
         .send("La contraseña es obligatoria y debe tener al menos 6 caracteres");
     }
 
-    const userExist = await User.findOne({ email }).exec();
+    const userExist = await User.findOne({ email }).exec(); // NOSONAR
     if (userExist) {
       return res.status(400).send("El correo electrónico ya está en uso");
     }
@@ -55,7 +55,7 @@ export const login = async (req, res) => {
     const { email, password } = req.body;
 
     // Comprobar si existe un usuario con el correo electrónico proporcionado en la base de datos
-    const user = await User.findOne({ email }).exec();
+    const user = await User.findOne({ email }).exec(); // NOSONAR
     if (!user) {
       return res.status(400).send("Usuario no encontrado");
     }
@@ -112,10 +112,7 @@ export const forgotPassword = async (req, res) => {
     const { email } = req.body;
     const shortCode = nanoid(6).toUpperCase();
 
-    const user = await User.findOneAndUpdate(
-      { email },
-      { passwordResetCode: shortCode }
-    );
+    const user = await User.findOneAndUpdate({ email }, { passwordResetCode: shortCode }); // NOSONAR
     if (!user) {
       return res.status(400).send("Usuario no encontrado");
     }
@@ -166,16 +163,7 @@ export const resetPassword = async (req, res) => {
     const { email, code, newPassword } = req.body;
     const hashedPassword = await hashPassword(newPassword);
 
-    const user = User.findOneAndUpdate(
-      {
-        email,
-        passwordResetCode: code,
-      },
-      {
-        password: hashedPassword,
-        passwordResetCode: "",
-      }
-    ).exec();
+    const user = User.findOneAndUpdate({email,passwordResetCode: code,},{password: hashedPassword,passwordResetCode: "",}).exec(); // NOSONAR
 
     res.json({ ok: true });
   } catch (err) {

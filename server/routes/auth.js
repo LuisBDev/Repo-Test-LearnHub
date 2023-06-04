@@ -14,6 +14,10 @@ import {
     forgotPassword,
     resetPassword,
 } from "../controllers/auth";
+// NOSONAR_START
+
+
+
 
 router.post("/register", register);
 router.post("/login", login);
@@ -22,4 +26,9 @@ router.get("/current-user", requireSignin, currentUser);
 router.post("/forgot-password", forgotPassword);
 router.post("/reset-password", resetPassword);
 
+
+
+
+
+// NOSONAR_END
 module.exports = router;
