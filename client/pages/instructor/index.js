@@ -43,7 +43,7 @@ const InstructorIndex = () => {
 
     useEffect(() => {
         if (user && publishedCount > 0) {
-            toast.success(`¡${user.name} tienes ${publishedCount} cursos publicados y ${(courses.length) - publishedCount} inactivo(s)!`);
+            toast.success(`¡Instructor ${user.name} tienes ${publishedCount} cursos publicados y ${(courses.length) - publishedCount} inactivo(s)!`);
         }
     }, [user, publishedCount]);
 

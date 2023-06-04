@@ -310,41 +310,7 @@ export const freeEnrollment = async (req, res) => {
 };
 
 export const paidEnrollment = async (req, res) => {
-    try {
-        const course = await Course.findById(req.params.courseId)
-            .populate("instructor")
-            .exec();
-        if (!course.paid) return;
-        const fee = (course.price * 30) / 100;
-        const session = await stripe.checkout.sessions.create({
-            payment_method_types: ["card"],
-            line_items: [
-                {
-                    name: course.name,
-                    amount: Math.round(course.price.toFixed(2) * 100),
-                    currency: "usd",
-                    quantity: 1,
-                },
-            ],
-            payment_intent_data: {
-                application_fee_amount: Math.round(fee.toFixed(2) * 100),
-                transfer_data: {
-                    destination: course.instructor.stripe_account_id,
-                },
-            },
-            success_url: `${process.env.STRIPE_SUCCESS_URL}/${course._id}`,
-            cancel_url: process.env.STRIPE_CANCEL_URL,
-        });
-        console.log("ID DE SESIÓN => ", session);
-
-        await User.findByIdAndUpdate(req.user._id, {
-            stripeSession: session,
-        }).exec();
-        res.send(session.id);
-    } catch (err) {
-        console.log("Error al crear la matrícula de pago", err);
-        return res.status(400).send("Error al crear la matrícula");
-    }
+    console.log("En construccion");
 };
 
 export const stripeSuccess = async (req, res) => {

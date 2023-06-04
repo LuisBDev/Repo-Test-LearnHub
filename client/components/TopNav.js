@@ -31,10 +31,17 @@ const TopNav = () => {
   const logout = async () => {
     dispatch({ type: "LOGOUT" });
     window.localStorage.removeItem("user");
-    const { data } = await axios.get("/api/logout");
-    toast(data.message);
-    router.push("/login");
+    try {
+      const { data } = await axios.get("/api/logout");
+      toast(data.message);
+      await router.push("/login");
+    } catch (error) {
+      // Manejar el error de la redirección
+      console.error("Error al redirigir a la página de inicio de sesión:", error);
+      // Realizar acciones adicionales o mostrar un mensaje de error al usuario
+    }
   };
+
 
   return (
     <Menu mode="horizontal" selectedKeys={[current]} className="mb-2" theme="dark">
@@ -108,7 +115,9 @@ const TopNav = () => {
                 <a>Dashboard</a>
               </Link>
             </Item>
-            <Item onClick={logout}>Logout</Item>
+            <Item onClick={() => logout()} key="logout">
+              Logout
+            </Item>
           </ItemGroup>
         </SubMenu>
       )}

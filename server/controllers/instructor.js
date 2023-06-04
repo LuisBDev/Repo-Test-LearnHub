@@ -18,23 +18,7 @@ export const makeInstructor = async (req, res) => {
 export const getAccountStatus = async (req, res) => {
     try {
         const user = await User.findById(req.user._id).exec();
-        const account = await stripe.accounts.retrieve(user.stripe_account_id);
-
-        if (!account.charges_enabled) {
-            return res.status(401).send("No autorizado");
-        } else {
-            const statusUpdated = await User.findByIdAndUpdate(
-                user._id,
-                {
-                    stripe_seller: account,
-                    $addToSet: { role: "Instructor" },
-                },
-                { new: true }
-            )
-                .select("-password")
-                .exec();
-            res.json(statusUpdated);
-        }
+        res.json(user);
     } catch (err) {
         console.log(err);
     }

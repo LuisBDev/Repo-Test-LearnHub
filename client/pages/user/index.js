@@ -30,12 +30,6 @@ const UserIndex = () => {
         }
     };
 
-    useEffect(() => {
-        if (user) {
-            toast.warning(`¡${user.name} tienes ${user.courses.length} cursos agregados en tu lista!`)
-        }
-    }, [user]);
-
 
     return (
         <UserRoute>
