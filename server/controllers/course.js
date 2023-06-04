@@ -198,9 +198,8 @@ export const removeLesson = async (req, res) => {
         return res.status(400).send("No autorizado");
     }
 
-    const deletedCourse = await Course.findByIdAndUpdate(course._id, {
-        $pull: { lessons: { _id: lessonId } },
-    }).exec();
+    await Course.findByIdAndUpdate(course._id, { $pull: { lessons: { _id: lessonId } } }).exec();
+
 
     res.json({ ok: true });
 };
@@ -215,18 +214,7 @@ export const updateLesson = async (req, res) => {
             return res.status(400).send("No autorizado");
         }
 
-        const updated = await Course.updateOne(
-            { "lessons._id": _id },
-            {
-                $set: {
-                    "lessons.$.title": title,
-                    "lessons.$.content": content,
-                    "lessons.$.video": video,
-                    "lessons.$.free_preview": free_preview,
-                },
-            },
-            { new: true }
-        ).exec();
+        const updated = await Course.updateOne({ "lessons._id": _id }, { $set: { "lessons.$.title": title, "lessons.$.content": content, "lessons.$.video": video, "lessons.$.free_preview": free_preview } }, { new: true }).exec(); // NOSONAR
         res.json({ ok: true });
     } catch (err) {
         console.log(err);

@@ -5,6 +5,7 @@ import axios from "axios";
 import { Avatar } from "antd";
 import Link from "next/link";
 import { SyncOutlined, PlayCircleOutlined } from "@ant-design/icons";
+import { toast } from "react-toastify";
 
 const UserIndex = () => {
     const {
@@ -28,6 +29,13 @@ const UserIndex = () => {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        if (user) {
+            toast.success(`¡Bienvenido, ${user.name}!`);
+        }
+    }, [user]);
+
 
     return (
         <UserRoute>
@@ -73,7 +81,6 @@ const UserIndex = () => {
                     </div>
                 </div>
             ))}
-
         </UserRoute>
     );
 };

@@ -13,7 +13,6 @@ const UpdateLessonForm = ({
 }) => {
     return (
         <div className="container pt-3">
-            {/* {JSON.stringify(current)} */}
             <form onSubmit={handleUpdateLesson}>
                 <input
                     type="text"

@@ -5,7 +5,6 @@ import {
   AppstoreOutlined,
   CoffeeOutlined,
   LoginOutlined,
-  LogoutOutlined,
   UserAddOutlined,
   CarryOutOutlined,
   TeamOutlined,
@@ -49,7 +48,7 @@ const TopNav = () => {
         </Link>
       </Item>
 
-      {user && user.role && user.role.includes("Instructor") ? (
+      {user?.role?.includes("Instructor") ? (
         <Item
           key="/instructor/course/create"
           onClick={(e) => setCurrent(e.key)}
@@ -100,7 +99,7 @@ const TopNav = () => {
       {user !== null && (
         <SubMenu
           icon={<CoffeeOutlined />}
-          title={user && user.name}
+          title={user?.name}
           className="float-right"
         >
           <ItemGroup>
@@ -114,7 +113,7 @@ const TopNav = () => {
         </SubMenu>
       )}
 
-      {user && user.role && user.role.includes("Instructor") && (
+      {user?.role?.includes("Instructor") && (
         <Item
           key="/instructor"
           onClick={(e) => setCurrent(e.key)}

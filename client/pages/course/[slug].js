@@ -30,7 +30,6 @@ const SingleCourse = ({ course }) => {
     };
 
     const router = useRouter();
-    const { slug } = router.query;
 
     const handlePaidEnrollment = async () => {
         try {

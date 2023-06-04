@@ -7,7 +7,7 @@ import {
     LoadingOutlined,
 } from "@ant-design/icons";
 import { toast } from "react-toastify";
-import UserRoute from "../../components/routes/UserRoute";
+
 
 const BecomeInstructor = () => {
     // state
@@ -56,10 +56,8 @@ const BecomeInstructor = () => {
                                 icon={loading ? <LoadingOutlined /> : null}
                                 size="large"
                                 onClick={becomeInstructor}
-                                disabled={
-                                    (user && user.role && user.role.includes("Instructor")) ||
-                                    loading
-                                }
+                                disabled={user?.role?.includes("Instructor") || loading}
+
                             >
                                 {loading ? "Procesando..." : "Conviértete en instructor"}
                             </Button>

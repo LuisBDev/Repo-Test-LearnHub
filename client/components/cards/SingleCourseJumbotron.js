@@ -30,6 +30,13 @@ const SingleCourseJumbotron = ({
         category,
     } = course;
 
+    let buttonText;
+    if (user) {
+        buttonText = enrolled.status ? "Ir al curso" : "Inscribirse";
+    } else {
+        buttonText = "Inicia sesión para inscribirte";
+    }
+
     return (
         <div className="jumbotron bg-primary square">
             <div className="row">
@@ -38,7 +45,7 @@ const SingleCourseJumbotron = ({
                     <h1 className="text-light font-weight-bold">{name}</h1>
                     {/* Descripción */}
                     <p className="lead">
-                        {description && description.substring(0, 160)}...
+                        {description?.substring(0, 160)}...
                     </p>
                     {/* Categoría */}
                     <Badge
@@ -61,9 +68,8 @@ const SingleCourseJumbotron = ({
                     </h4>
                 </div>
                 <div className="col-md-4">
-                    {/* {JSON.stringify(lessons[0])} */}
-                    {/* Mostrar vista previa del video o imagen del curso */}
-                    {lessons[0].video && lessons[0].video.Location ? (
+                    {/* Video */}
+                    {lessons[0]?.video?.Location ? (
                         <div
                             onClick={() => {
                                 setPreview(lessons[0].video.Location);
@@ -83,7 +89,8 @@ const SingleCourseJumbotron = ({
                             <img src={image.Location} alt={name} className="img img-fluid" />
                         </>
                     )}
-                    {/* Botón de inscripción */}
+
+                    {/* Botón de inscripción  */}
                     {loading ? (
                         <div className="d-flex justify-content-center mt-3">
                             <LoadingOutlined className="h1 text-danger" />
@@ -99,11 +106,7 @@ const SingleCourseJumbotron = ({
                             disabled={loading}
                             onClick={paid ? handlePaidEnrollment : handleFreeEnrollment}
                         >
-                            {user
-                                ? enrolled.status
-                                    ? "Ir al curso"
-                                    : "Inscribirse"
-                                : "Inicia sesión para inscribirte"}
+                            {buttonText}
                         </Button>
                     )}
                 </div>

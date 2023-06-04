@@ -48,7 +48,7 @@ const CourseEdit = () => {
         const { data } = await axios.get(`/api/course/${slug}`);
         console.log(data);
         if (data) setValues(data);
-        if (data && data.image) setImage(data.image);
+        if (data?.image) setImage(data.image);
     };
 
     const handleChange = (e) => {
@@ -86,6 +86,7 @@ const CourseEdit = () => {
             setPreview("");
             setUploadButtonText("Subir imagen");
             setValues({ ...values, loading: false });
+            console.log(res);
         } catch (err) {
             console.log(err);
             setValues({ ...values, loading: false });
@@ -101,7 +102,8 @@ const CourseEdit = () => {
                 image,
             });
             toast("¡Curso actualizado!");
-            // router.push("/instructor");
+            console.log(data);
+            router.push(`/instructor/course/view/${slug}`);
         } catch (err) {
             toast(err.response.data);
         }
@@ -122,10 +124,6 @@ const CourseEdit = () => {
 
         setValues({ ...values, lessons: [...allLessons] });
 
-        const { data } = await axios.put(`/api/course/${slug}`, {
-            ...values,
-            image,
-        });
 
         toast("Lecciones reorganizadas exitosamente");
     };
@@ -146,7 +144,7 @@ const CourseEdit = () => {
      */
 
     const handleVideo = async (e) => {
-        if (current.video && current.video.Location) {
+        if (current?.video?.Location) {
             const res = await axios.post(
                 `/api/course/video-remove/${values.instructor._id}`,
                 current.video
@@ -214,11 +212,11 @@ const CourseEdit = () => {
 
             <div className="row pb-5">
                 <div className="col lesson-list">
-                    <h4>{values && values.lessons && values.lessons.length} Lecciones</h4>
+                    <h4>{values?.lessons?.length} Lecciones</h4>
                     <List
                         onDragOver={(e) => e.preventDefault()}
                         itemLayout="horizontal"
-                        dataSource={values && values.lessons}
+                        dataSource={values?.lessons}
                         renderItem={(item, index) => (
                             <Item
                                 draggable

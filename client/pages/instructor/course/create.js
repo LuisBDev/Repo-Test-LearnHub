@@ -72,6 +72,7 @@ const CourseCreate = () => {
             });
             toast("¡Ya puedes subir lecciones!");
             router.push("/instructor");
+            console.log(data);
         } catch (err) {
             toast(err.response.data);
         }

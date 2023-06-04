@@ -16,7 +16,6 @@ const { Item } = Menu;
 const SingleCourse = () => {
     const [clicked, setClicked] = useState(-1);
     const [collapsed, setCollapsed] = useState(false);
-    const [loading, setLoading] = useState(false);
     const [course, setCourse] = useState({ lessons: [] });
 
     // router
@@ -48,11 +47,11 @@ const SingleCourse = () => {
                         inlineCollapsed={collapsed}
                         style={{ height: "80vh", overflow: "scroll" }}
                     >
-                        {course.lessons.map((lesson, index) => (
+                        {course.lessons.map((lesson) => (
                             <Item
-                                onClick={() => setClicked(index)}
-                                key={index}
-                                icon={<Avatar>{index + 1}</Avatar>}
+                                onClick={() => setClicked(lesson.id)} // Utiliza una propiedad única de la lección como clave
+                                key={lesson.id} // Usa una propiedad única de la lección como clave
+                                icon={<Avatar>{lesson.id}</Avatar>} // Utiliza una propiedad única de la lección como clave
                             >
                                 {lesson.title.substring(0, 30)}
                             </Item>
@@ -63,20 +62,19 @@ const SingleCourse = () => {
                 <div className="col">
                     {clicked !== -1 ? (
                         <>
-                            {course.lessons[clicked].video &&
-                                course.lessons[clicked].video.Location && (
-                                    <>
-                                        <div className="wrapper">
-                                            <ReactPlayer
-                                                className="player"
-                                                url={course.lessons[clicked].video.Location}
-                                                width="100%"
-                                                height="100%"
-                                                controls
-                                            />
-                                        </div>
-                                    </>
-                                )}
+                            {course.lessons[clicked]?.video?.Location && (
+                                <>
+                                    <div className="wrapper">
+                                        <ReactPlayer
+                                            className="player"
+                                            url={course.lessons[clicked].video.Location}
+                                            width="100%"
+                                            height="100%"
+                                            controls
+                                        />
+                                    </div>
+                                </>
+                            )}
 
                             <ReactMarkdown
                                 source={course.lessons[clicked].content}

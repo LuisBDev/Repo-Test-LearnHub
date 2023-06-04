@@ -132,6 +132,35 @@ const CourseView = () => {
         }
     };
 
+    const renderPublishButton = () => {
+        if ((course?.lessons?.length) < 5) {
+            return (
+                <Tooltip title="Se requieren al menos 5 lecciones para publicar">
+                    <QuestionOutlined className="h5 pointer text-danger" />
+                </Tooltip>
+            );
+        } else if (course.published) {
+            return (
+                <Tooltip title="Despublicar">
+                    <CloseOutlined
+                        onClick={(e) => handleUnpublish(e, course._id)}
+                        className="h5 pointer text-danger"
+                    />
+                </Tooltip>
+            );
+        } else {
+            return (
+                <Tooltip title="Publicar">
+                    <CheckOutlined
+                        onClick={(e) => handlePublish(e, course._id)}
+                        className="h5 pointer text-success"
+                    />
+                </Tooltip>
+            );
+        }
+    };
+
+
     return (
         <InstructorRoute>
             <div className="contianer-fluid pt-3">
@@ -148,7 +177,7 @@ const CourseView = () => {
                                     <div className="col">
                                         <h5 className="mt-2 text-primary">{course.name}</h5>
                                         <p style={{ marginTop: "-10px" }}>
-                                            {course.lessons && course.lessons.length} Lecciones
+                                            {course?.lessons?.length} Lecciones
                                         </p>
                                         <p style={{ marginTop: "-15px", fontSize: "10px" }}>
                                             {course.category}
@@ -165,25 +194,8 @@ const CourseView = () => {
                                             />
                                         </Tooltip>
 
-                                        {course.lessons && course.lessons.length < 5 ? (
-                                            <Tooltip title="Se requieren al menos 5 lecciones para publicar">
-                                                <QuestionOutlined className="h5 pointer text-danger" />
-                                            </Tooltip>
-                                        ) : course.published ? (
-                                            <Tooltip title="Despublicar">
-                                                <CloseOutlined
-                                                    onClick={(e) => handleUnpublish(e, course._id)}
-                                                    className="h5 pointer text-danger"
-                                                />
-                                            </Tooltip>
-                                        ) : (
-                                            <Tooltip title="Publicar">
-                                                <CheckOutlined
-                                                    onClick={(e) => handlePublish(e, course._id)}
-                                                    className="h5 pointer text-success"
-                                                />
-                                            </Tooltip>
-                                        )}
+                                        {renderPublishButton()}
+
                                     </div>
                                 </div>
                             </div>
@@ -231,11 +243,11 @@ const CourseView = () => {
                         <div className="row pb-5">
                             <div className="col lesson-list">
                                 <h4>
-                                    {course && course.lessons && course.lessons.length} Lecciones
+                                    {course?.lessons?.length} Lecciones
                                 </h4>
                                 <List
                                     itemLayout="horizontal"
-                                    dataSource={course && course.lessons}
+                                    dataSource={course?.lessons}
                                     renderItem={(item, index) => (
                                         <List.Item>
                                             <List.Item.Meta

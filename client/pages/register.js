@@ -19,6 +19,7 @@ const Register = () => {
     if (user !== null) router.push("/");
   }, [user]);
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -35,7 +36,9 @@ const Register = () => {
       setEmail("");
       setPassword("");
       setLoading(false);
-    } catch (err) {
+      console.log(data);
+    }
+    catch (err) {
       toast(err.response.data);
       setLoading(false);
     }
@@ -90,6 +93,7 @@ const Register = () => {
           </Link>
         </p>
       </div>
+
     </>
   );
 };

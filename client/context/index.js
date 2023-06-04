@@ -1,6 +1,7 @@
-import { useReducer, createContext, useEffect } from "react";
+import { useReducer, createContext, useEffect, useMemo } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
+
 
 // estado inicial
 const initialState = {
@@ -67,15 +68,15 @@ const Provider = ({ children }) => {
     useEffect(() => {
         const getCsrfToken = async () => {
             const { data } = await axios.get("/api/csrf-token");
-            // console.log("CSRF", data);
             axios.defaults.headers["X-CSRF-Token"] = data.getCsrfToken;
         };
         getCsrfToken();
     }, []);
 
-    return (
+    return useMemo(() => (
         <Context.Provider value={{ state, dispatch }}>{children}</Context.Provider>
-    );
+    ), [state, dispatch, children]);
+
 };
 
 export { Context, Provider };
