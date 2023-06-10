@@ -7,38 +7,43 @@ import SingleCourseLessons from "../../components/cards/SingleCourseLessons";
 import { Context } from "../../context";
 import { toast } from "react-toastify";
 
-
 const SingleCourse = ({ course }) => {
-    // estado
     const [showModal, setShowModal] = useState(false);
     const [preview, setPreview] = useState("");
     const [loading, setLoading] = useState(false);
     const [enrolled, setEnrolled] = useState({});
-    // contexto
-    const {
-        state: { user },
-    } = useContext(Context);
+
+    const { state: { user } } = useContext(Context);
+    const router = useRouter();
 
     useEffect(() => {
-        if (user && course) checkEnrollment();
+        if (user && course) {
+            checkEnrollment();
+        }
     }, [user, course]);
 
+    // Verificar si el usuario está inscrito en el curso
     const checkEnrollment = async () => {
         const { data } = await axios.get(`/api/check-enrollment/${course._id}`);
         console.log("VERIFICAR INSCRIPCIÓN", data);
         setEnrolled(data);
     };
 
-    const router = useRouter();
-
+    // Manejar la inscripción pagada
     const handlePaidEnrollment = async () => {
         try {
             setLoading(true);
-            // verificar si el usuario ha iniciado sesión
-            if (!user) router.push("/login");
-            // verificar si ya está inscrito
-            if (enrolled.status)
-                return router.push(`/user/course/${enrolled.course.slug}`);
+
+            if (!user) {
+                router.push("/login");
+                return;
+            }
+
+            if (enrolled.status) {
+                router.push(`/user/course/${enrolled.course.slug}`);
+                return;
+            }
+
             const { data } = await axios.post(`/api/paid-enrollment/${course._id}`);
             const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_KEY);
             stripe.redirectToCheckout({ sessionId: data });
@@ -49,14 +54,20 @@ const SingleCourse = ({ course }) => {
         }
     };
 
+    // Manejar la inscripción gratuita
     const handleFreeEnrollment = async (e) => {
         e.preventDefault();
         try {
-            // verificar si el usuario ha iniciado sesión
-            if (!user) router.push("/login");
-            // verificar si ya está inscrito
-            if (enrolled.status)
-                return router.push(`/user/course/${enrolled.course.slug}`);
+            if (!user) {
+                router.push("/login");
+                return;
+            }
+
+            if (enrolled.status) {
+                router.push(`/user/course/${enrolled.course.slug}`);
+                return;
+            }
+
             setLoading(true);
             const { data } = await axios.post(`/api/free-enrollment/${course._id}`);
             toast(data.message);
@@ -71,7 +82,6 @@ const SingleCourse = ({ course }) => {
 
     return (
         <>
-            {/* <pre>{JSON.stringify(course, null, 4)}</pre> */}
             <SingleCourseJumbotron
                 course={course}
                 showModal={showModal}

@@ -6,6 +6,46 @@ import Link from "next/link";
 import { Context } from "../context";
 import { useRouter } from "next/router";
 
+// Función reutilizable para los elementos de formulario
+const FormInput = ({ type, value, onChange, placeholder, required }) => (
+    <input
+        type={type}
+        className="form-control mb-4 p-4"
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        required={required}
+    />
+);
+
+const LoginForm = ({ handleSubmit, email, setEmail, password, setPassword, loading }) => (
+    <form onSubmit={handleSubmit}>
+        <FormInput
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Ingresa tu correo electrónico"
+            required
+        />
+
+        <FormInput
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Ingresa tu contraseña"
+            required
+        />
+
+        <button
+            type="submit"
+            className="btn btn-block btn-primary"
+            disabled={!email || !password || loading}
+        >
+            {loading ? <SyncOutlined spin /> : "Enviar"}
+        </button>
+    </form>
+);
+
 const Login = () => {
     const [email, setEmail] = useState("balarezoseller@gmail.com");
     const [password, setPassword] = useState("balarezoseller");
@@ -52,33 +92,14 @@ const Login = () => {
             <h1 className="jumbotron text-center bg-primary square">Iniciar sesión</h1>
 
             <div className="container col-md-4 offset-md-4 pb-5">
-                <form onSubmit={handleSubmit}>
-                    <input
-                        type="email"
-                        className="form-control mb-4 p-4"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="Ingresa tu correo electrónico"
-                        required
-                    />
-
-                    <input
-                        type="password"
-                        className="form-control mb-4 p-4"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder="Ingresa tu contraseña"
-                        required
-                    />
-
-                    <button
-                        type="submit"
-                        className="btn btn-block btn-primary"
-                        disabled={!email || !password || loading}
-                    >
-                        {loading ? <SyncOutlined spin /> : "Enviar"}
-                    </button>
-                </form>
+                <LoginForm
+                    handleSubmit={handleSubmit}
+                    email={email}
+                    setEmail={setEmail}
+                    password={password}
+                    setPassword={setPassword}
+                    loading={loading}
+                />
 
                 <p className="text-center pt-3">
                     ¿Todavía no estás registrado?{" "}

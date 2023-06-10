@@ -37,13 +37,66 @@ const SingleCourse = () => {
         }
     }, [slug]);
 
+    const toggleCollapsed = () => {
+        setCollapsed(!collapsed);
+    };
+
+    const handleLessonClick = (lessonId) => {
+        setClicked(lessonId);
+    };
+
+    const renderMenuItems = () => {
+        return course.lessons.map((lesson) => (
+            <Item
+                onClick={() => handleLessonClick(lesson.id)}
+                key={lesson.id}
+                icon={<Avatar>{lesson.id}</Avatar>}
+            >
+                {lesson.title.substring(0, 30)}
+            </Item>
+        ));
+    };
+
+    const renderContent = () => {
+        if (clicked !== -1) {
+            const lesson = course.lessons[clicked];
+            return (
+                <>
+                    {lesson?.video?.Location && (
+                        <div className="wrapper">
+                            <ReactPlayer
+                                className="player"
+                                url={lesson.video.Location}
+                                width="100%"
+                                height="100%"
+                                controls
+                            />
+                        </div>
+                    )}
+
+                    <ReactMarkdown className="single-post">
+                        {lesson.content}
+                    </ReactMarkdown>
+                </>
+            );
+        } else {
+            return (
+                <div className="d-flex justify-content-center p-5">
+                    <div className="text-center p-5">
+                        <PlayCircleOutlined className="text-primary display-1 p-5" />
+                        <p className="lead">Haz clic en las lecciones para comenzar a aprender</p>
+                    </div>
+                </div>
+            );
+        }
+    };
 
     return (
         <StudentRoute>
             <div className="row">
                 <div style={{ maWidth: 320 }}>
                     <Button
-                        onClick={() => setCollapsed(!collapsed)}
+                        onClick={toggleCollapsed}
                         className="text-primary mt-1 btn-block mb-2"
                     >
                         {createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined)}{" "}
@@ -54,48 +107,12 @@ const SingleCourse = () => {
                         inlineCollapsed={collapsed}
                         style={{ height: "80vh", overflow: "scroll" }}
                     >
-                        {course.lessons.map((lesson) => (
-                            <Item
-                                onClick={() => setClicked(lesson.id)} // Utiliza una propiedad única de la lección como clave
-                                key={lesson.id} // Usa una propiedad única de la lección como clave
-                                icon={<Avatar>{lesson.id}</Avatar>} // Utiliza una propiedad única de la lección como clave
-                            >
-                                {lesson.title.substring(0, 30)}
-                            </Item>
-                        ))}
+                        {renderMenuItems()}
                     </Menu>
                 </div>
 
                 <div className="col">
-                    {clicked !== -1 ? (
-                        <>
-                            {course.lessons[clicked]?.video?.Location && (
-                                <>
-                                    <div className="wrapper">
-                                        <ReactPlayer
-                                            className="player"
-                                            url={course.lessons[clicked].video.Location}
-                                            width="100%"
-                                            height="100%"
-                                            controls
-                                        />
-                                    </div>
-                                </>
-                            )}
-
-                            <ReactMarkdown
-                                source={course.lessons[clicked].content}
-                                className="single-post"
-                            />
-                        </>
-                    ) : (
-                        <div className="d-flex justify-content-center p-5">
-                            <div className="text-center p-5">
-                                <PlayCircleOutlined className="text-primary display-1 p-5" />
-                                <p className="lead">Haz clic en las lecciones para comenzar a aprender</p>
-                            </div>
-                        </div>
-                    )}
+                    {renderContent()}
                 </div>
             </div>
         </StudentRoute>

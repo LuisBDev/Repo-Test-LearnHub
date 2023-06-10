@@ -133,7 +133,7 @@ const CourseView = () => {
     };
 
     const renderPublishButton = () => {
-        if ((course?.lessons?.length) < 5) {
+        if (course?.lessons?.length < 5) {
             return (
                 <Tooltip title="Se requieren al menos 5 lecciones para publicar">
                     <QuestionOutlined className="h5 pointer text-danger" />
@@ -160,10 +160,18 @@ const CourseView = () => {
         }
     };
 
+    const lessonList = course?.lessons?.map((item) => (
+        <List.Item key={item.title}>
+            <List.Item.Meta
+                avatar={<Avatar>{item.title.substring(0, 1)}</Avatar>}
+                title={item.title}
+            ></List.Item.Meta>
+        </List.Item>
+    ));
 
     return (
         <InstructorRoute>
-            <div className="contianer-fluid pt-3">
+            <div className="container-fluid pt-3">
                 {course && (
                     <div className="container-fluid pt-1">
                         <div className="media pt-2">
@@ -195,7 +203,6 @@ const CourseView = () => {
                                         </Tooltip>
 
                                         {renderPublishButton()}
-
                                     </div>
                                 </div>
                             </div>
@@ -242,21 +249,10 @@ const CourseView = () => {
 
                         <div className="row pb-5">
                             <div className="col lesson-list">
-                                <h4>
-                                    {course?.lessons?.length} Lecciones
-                                </h4>
-                                <List
-                                    itemLayout="horizontal"
-                                    dataSource={course?.lessons}
-                                    renderItem={(item, index) => (
-                                        <List.Item>
-                                            <List.Item.Meta
-                                                avatar={<Avatar>{index + 1}</Avatar>}
-                                                title={item.title}
-                                            ></List.Item.Meta>
-                                        </List.Item>
-                                    )}
-                                ></List>
+                                <h4>{course?.lessons?.length} Lecciones</h4>
+                                <List itemLayout="horizontal" dataSource={course?.lessons}>
+                                    {lessonList}
+                                </List>
                             </div>
                         </div>
                     </div>

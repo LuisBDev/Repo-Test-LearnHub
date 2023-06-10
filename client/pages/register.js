@@ -6,6 +6,18 @@ import Link from "next/link";
 import { Context } from "../context";
 import { useRouter } from "next/router";
 
+// Componente reutilizable para los elementos de formulario
+const FormInput = ({ type, value, onChange, placeholder, required }) => (
+  <input
+    type={type}
+    className="form-control mb-4 p-4"
+    value={value}
+    onChange={onChange}
+    placeholder={placeholder}
+    required={required}
+  />
+);
+
 const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -18,7 +30,6 @@ const Register = () => {
   useEffect(() => {
     if (user !== null) router.push("/");
   }, [user]);
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -41,10 +52,7 @@ const Register = () => {
       toast(err.response.data);
       setLoading(false);
     }
-
-    return Promise.resolve();
   };
-
 
   return (
     <>
@@ -52,27 +60,24 @@ const Register = () => {
 
       <div className="container col-md-4 offset-md-4 pb-5">
         <form onSubmit={handleSubmit}>
-          <input
+          <FormInput
             type="text"
-            className="form-control mb-4 p-4"
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Ingresa tu nombre"
             required
           />
 
-          <input
+          <FormInput
             type="email"
-            className="form-control mb-4 p-4"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Ingresa tu correo electrónico"
             required
           />
 
-          <input
+          <FormInput
             type="password"
-            className="form-control mb-4 p-4"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Ingresa tu contraseña"

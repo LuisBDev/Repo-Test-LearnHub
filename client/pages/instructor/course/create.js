@@ -26,26 +26,25 @@ const CourseCreate = () => {
         setValues({ ...values, [e.target.name]: e.target.value });
     };
 
-    const handleImage = (e) => {
+    const handleImage = async (e) => {
         let file = e.target.files[0];
         setPreview(window.URL.createObjectURL(file));
         setUploadButtonText(file.name);
         setValues({ ...values, loading: true });
 
-        Resizer.imageFileResizer(file, 720, 500, "JPEG", 100, 0, async (uri) => {
-            try {
-                let { data } = await axios.post("/api/course/upload-image", {
-                    image: uri,
-                });
-                console.log("IMAGEN SUBIDA", data);
-                setImage(data);
-                setValues({ ...values, loading: false });
-            } catch (err) {
-                console.log(err);
-                setValues({ ...values, loading: false });
-                toast("Error al subir la imagen. Inténtalo más tarde.");
-            }
-        });
+        try {
+            const uri = await resizeImageFile(file);
+            let { data } = await axios.post("/api/course/upload-image", {
+                image: uri,
+            });
+            console.log("IMAGEN SUBIDA", data);
+            setImage(data);
+            setValues({ ...values, loading: false });
+        } catch (err) {
+            console.log(err);
+            setValues({ ...values, loading: false });
+            toast("Error al subir la imagen. Inténtalo más tarde.");
+        }
     };
 
     const handleImageRemove = async () => {
@@ -76,6 +75,23 @@ const CourseCreate = () => {
         } catch (err) {
             toast(err.response.data);
         }
+    };
+
+    const resizeImageFile = (file) => {
+        return new Promise((resolve) => {
+            Resizer.imageFileResizer(
+                file,
+                720,
+                500,
+                "JPEG",
+                100,
+                0,
+                (uri) => {
+                    resolve(uri);
+                },
+                "base64"
+            );
+        });
     };
 
     return (

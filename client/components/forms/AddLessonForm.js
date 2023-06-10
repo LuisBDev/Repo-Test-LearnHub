@@ -11,13 +11,17 @@ const AddLessonForm = ({
     progress,
     handleVideoRemove,
 }) => {
+    const handleInputChange = (e, field) => {
+        setValues({ ...values, [field]: e.target.value });
+    };
+
     return (
         <div className="container pt-3">
             <form onSubmit={handleAddLesson}>
                 <input
                     type="text"
                     className="form-control square"
-                    onChange={(e) => setValues({ ...values, title: e.target.value })}
+                    onChange={(e) => handleInputChange(e, "title")}
                     value={values.title}
                     placeholder="Título"
                     autoFocus
@@ -28,7 +32,7 @@ const AddLessonForm = ({
                     className="form-control mt-3"
                     cols="7"
                     rows="7"
-                    onChange={(e) => setValues({ ...values, content: e.target.value })}
+                    onChange={(e) => handleInputChange(e, "content")}
                     value={values.content}
                     placeholder="Contenido"
                 ></textarea>
@@ -39,7 +43,7 @@ const AddLessonForm = ({
                         <input onChange={handleVideo} type="file" accept="video/*" hidden />
                     </label>
 
-                    {!uploading && values.video.Location && (
+                    {!uploading && values.video?.Location && (
                         <Tooltip title="Eliminar">
                             <span onClick={handleVideoRemove} className="pt-1 pl-3">
                                 <CloseCircleFilled className="text-danger d-flex justify-content-center pt-4 pointer" />

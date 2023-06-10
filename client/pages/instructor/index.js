@@ -47,61 +47,81 @@ const InstructorIndex = () => {
         }
     }, [user, publishedCount]);
 
+    const renderCourseItem = (course) => {
+        return (
+            <div key={course._id} className="media pt-2">
+                <Avatar
+                    size={80}
+                    src={course.image ? course.image.Location : "/course.png"}
+                />
+
+                <div className="media-body pl-2">
+                    <div className="row">
+                        <div className="col">
+                            <Link
+                                href={`/instructor/course/view/${course.slug}`}
+                                className="pointer"
+                            >
+                                <a className="mt-2 text-primary">
+                                    <h5 className="pt-2">{course.name}</h5>
+                                </a>
+                            </Link>
+                            <p style={{ marginTop: "-10px" }}>
+                                {course.lessons.length} Lecciones
+                            </p>
+
+                            {renderCourseStatus(course)}
+                        </div>
+
+                        <div className="col-md-3 mt-3 text-center">
+                            {renderCourseIcon(course)}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
+    const renderCourseStatus = (course) => {
+        if (course.lessons.length < 5) {
+            return (
+                <p style={myStyle} className="text-warning">
+                    Se requieren al menos 5 lecciones para publicar un curso
+                </p>
+            );
+        } else {
+            return (
+                <p style={myStyle} className="text-success">
+                    {course.published
+                        ? "Tu curso está publicado en el mercado"
+                        : "Tu curso está listo para ser publicado"}
+                </p>
+            );
+        }
+    };
+
+    const renderCourseIcon = (course) => {
+        if (course.published) {
+            return (
+                <Tooltip title="Publicado">
+                    <CheckCircleOutlined className="h5 pointer text-success" />
+                </Tooltip>
+            );
+        } else {
+            return (
+                <Tooltip title="No publicado">
+                    <CloseCircleOutlined className="h5 pointer text-warning" />
+                </Tooltip>
+            );
+        }
+    };
+
     return (
         <InstructorRoute>
             <h1 className="jumbotron text-center square">Panel del Instructor</h1>
 
-            {courses ? (
-                courses.map((course) => (
-                    <div key={course._id} className="media pt-2">
-                        <Avatar
-                            size={80}
-                            src={course.image ? course.image.Location : "/course.png"}
-                        />
-
-                        <div className="media-body pl-2">
-                            <div className="row">
-                                <div className="col">
-                                    <Link
-                                        href={`/instructor/course/view/${course.slug}`}
-                                        className="pointer"
-                                    >
-                                        <a className="mt-2 text-primary">
-                                            <h5 className="pt-2">{course.name}</h5>
-                                        </a>
-                                    </Link>
-                                    <p style={{ marginTop: "-10px" }}>
-                                        {course.lessons.length} Lecciones
-                                    </p>
-
-                                    {course.lessons.length < 5 ? (
-                                        <p style={myStyle} className="text-warning">
-                                            Se requieren al menos 5 lecciones para publicar un curso
-                                        </p>
-                                    ) : (
-                                        <p style={myStyle} className="text-success">
-                                            {course.published
-                                                ? "Tu curso está publicado en el mercado"
-                                                : "Tu curso está listo para ser publicado"}
-                                        </p>
-                                    )}
-                                </div>
-
-                                <div className="col-md-3 mt-3 text-center">
-                                    {course.published ? (
-                                        <Tooltip title="Publicado">
-                                            <CheckCircleOutlined className="h5 pointer text-success" />
-                                        </Tooltip>
-                                    ) : (
-                                        <Tooltip title="No publicado">
-                                            <CloseCircleOutlined className="h5 pointer text-warning" />
-                                        </Tooltip>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                ))
+            {courses.length > 0 ? (
+                courses.map((course) => renderCourseItem(course))
             ) : (
                 <p>No hay cursos disponibles</p>
             )}

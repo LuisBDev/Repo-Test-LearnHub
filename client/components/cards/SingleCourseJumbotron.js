@@ -7,14 +7,12 @@ const SingleCourseJumbotron = ({
     course,
     showModal,
     setShowModal,
-    preview,
     setPreview,
     loading,
     user,
     handlePaidEnrollment,
     handleFreeEnrollment,
     enrolled,
-    setEnrolled,
 }) => {
     // Destructuración
     const {
@@ -29,6 +27,7 @@ const SingleCourseJumbotron = ({
         category,
     } = course;
 
+    // Texto del botón de inscripción
     let buttonText;
     if (user) {
         buttonText = enrolled.status ? "Ir al curso" : "Inscribirse";
@@ -89,7 +88,7 @@ const SingleCourseJumbotron = ({
                         </>
                     )}
 
-                    {/* Botón de inscripción  */}
+                    {/* Botón de inscripción */}
                     {loading ? (
                         <div className="d-flex justify-content-center mt-3">
                             <LoadingOutlined className="h1 text-danger" />

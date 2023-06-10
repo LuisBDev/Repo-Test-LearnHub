@@ -11,6 +11,7 @@ const SingleCourseLessons = ({
     <div className="container">
       <div className="row">
         <div className="col lesson-list">
+          {/* Número de lecciones */}
           {lessons && <h4>{lessons.length} Lecciones</h4>}
           <hr />
           <List
@@ -18,10 +19,12 @@ const SingleCourseLessons = ({
             dataSource={lessons}
             renderItem={(item, index) => (
               <Item>
+                {/* Avatar con número de lección */}
                 <Item.Meta
                   avatar={<Avatar>{index + 1}</Avatar>}
                   title={item.title}
                 />
+                {/* Vista previa */}
                 {item.video && item.video !== null && item.free_preview && (
                   <span
                     className="text-primary pointer"
