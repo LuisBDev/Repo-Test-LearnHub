@@ -5,18 +5,22 @@ import axios from "axios";
 import { Avatar } from "antd";
 import Link from "next/link";
 import { SyncOutlined, PlayCircleOutlined } from "@ant-design/icons";
-import { toast } from "react-toastify";
 
 const UserIndex = () => {
     const {
         state: { user },
     } = useContext(Context);
+    console.log("user", user);
     const [courses, setCourses] = useState([]);
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        loadCourses();
+        const fetchCourses = async () => {
+            await loadCourses();
+        };
+        fetchCourses();
     }, []);
+
 
     const loadCourses = async () => {
         try {

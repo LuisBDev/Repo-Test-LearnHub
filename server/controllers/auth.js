@@ -63,6 +63,7 @@ export const login = async (req, res) => {
     // Comprobar la contraseña
     const match = await comparePassword(password, user.password);
     if (!match) {
+      console.log(match);
       return res.status(400).send("Contraseña incorrecta");
     }
 
@@ -163,7 +164,7 @@ export const resetPassword = async (req, res) => {
     const { email, code, newPassword } = req.body;
     const hashedPassword = await hashPassword(newPassword);
 
-    const user = User.findOneAndUpdate({email,passwordResetCode: code,},{password: hashedPassword,passwordResetCode: "",}).exec(); // NOSONAR
+    const user = User.findOneAndUpdate({ email, passwordResetCode: code, }, { password: hashedPassword, passwordResetCode: "", }).exec(); // NOSONAR
 
     res.json({ ok: true });
   } catch (err) {

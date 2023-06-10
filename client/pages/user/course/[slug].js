@@ -23,13 +23,20 @@ const SingleCourse = () => {
     const { slug } = router.query;
 
     useEffect(() => {
-        if (slug) loadCourse();
+        const loadCourse = async () => {
+            try {
+                const { data } = await axios.get(`/api/user/course/${slug}`);
+                setCourse(data);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        if (slug) {
+            loadCourse();
+        }
     }, [slug]);
 
-    const loadCourse = async () => {
-        const { data } = await axios.get(`/api/user/course/${slug}`);
-        setCourse(data);
-    };
 
     return (
         <StudentRoute>

@@ -1,11 +1,13 @@
 import express from "express";
 import cors from "cors";
-import { readdirSync } from "fs";
 import mongoose from "mongoose";
 import csrf from "csurf";
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
 require("dotenv").config();
+const fs = require('fs');
+const path = require('path');
+
 const csrfProtection = csrf({ cookie: true }); // NOSONAR
 
 
@@ -35,7 +37,10 @@ app.use(cookieParser());
 app.use(morgan("dev"));
 
 // rutas
-readdirSync("./routes").map((r) => app.use("/api", require(`./routes/${r}`)));
+fs.readdirSync('./routes').forEach((file) => {
+  const routePath = path.join(__dirname, 'routes', file);
+  app.use('/api', require(routePath));
+});
 // csrf
 app.use(csrfProtection);
 

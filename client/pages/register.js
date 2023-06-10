@@ -37,12 +37,14 @@ const Register = () => {
       setPassword("");
       setLoading(false);
       console.log(data);
-    }
-    catch (err) {
+    } catch (err) {
       toast(err.response.data);
       setLoading(false);
     }
+
+    return Promise.resolve();
   };
+
 
   return (
     <>

@@ -1,5 +1,5 @@
 import { currencyFormatter } from "../../utils/helpers";
-import { Badge, Modal, Button } from "antd";
+import { Badge, Button } from "antd";
 import ReactPlayer from "react-player";
 import { LoadingOutlined, SafetyOutlined } from "@ant-design/icons";
 
