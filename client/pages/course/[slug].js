@@ -7,6 +7,7 @@ import SingleCourseLessons from "../../components/cards/SingleCourseLessons";
 import { Context } from "../../context";
 import { toast } from "react-toastify";
 
+
 const SingleCourse = ({ course }) => {
     const [showModal, setShowModal] = useState(false);
     const [preview, setPreview] = useState("");
@@ -30,10 +31,9 @@ const SingleCourse = ({ course }) => {
     };
 
     // Manejar la inscripción pagada
-    const handlePaidEnrollment = async () => {
+    const handlePaidEnrollment = async (e) => {
+        e.preventDefault();
         try {
-            setLoading(true);
-
             if (!user) {
                 router.push("/login");
                 return;
@@ -44,11 +44,15 @@ const SingleCourse = ({ course }) => {
                 return;
             }
 
+            setLoading(true);
             const { data } = await axios.post(`/api/paid-enrollment/${course._id}`);
-            const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_KEY);
-            stripe.redirectToCheckout({ sessionId: data });
+            toast(data.message);
+            setLoading(false);
+            router.push(`/user/course/${data.course.slug}`);
+
+            
         } catch (err) {
-            toast("Error en la inscripción, inténtalo de nuevo.");
+            toast("Error en la inscripción pagada, inténtalo de nuevo.");
             console.log(err);
             setLoading(false);
         }

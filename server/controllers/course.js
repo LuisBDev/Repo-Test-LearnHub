@@ -1,9 +1,10 @@
 import AWS from "aws-sdk";
 import { nanoid } from "nanoid";
-import Course from "../models/course";
 import slugify from "slugify";
 import { readFileSync } from "fs";
 import User from "../models/user";
+import Course from "../models/course";
+import Completed from "../models/completed";
 
 const awsConfig = {
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -169,6 +170,28 @@ export const addLesson = async (req, res) => {
     }
 };
 
+
+export const addQuestion = async (req, res) => {
+    try {
+        const { slug, instructorId } = req.params;
+        const { title, content, answer, options } = req.body;
+        if (req.user._id != instructorId) {
+            return res.status(400).send("No autorizado");
+        }
+
+        const updated = await Course.findOneAndUpdate({ slug },
+            { $push: { questions: { title, content, answer, options, slug: slugify(title) } } },
+            { new: true }).populate("instructor", "_id name").exec(); // NOSONAR
+        res.json(updated);
+
+    }
+    catch (err) {
+        console.log(err);
+        return res.status(400).send("Error al agregar la pregunta");
+    }
+};
+
+
 export const update = async (req, res) => {
     try {
         const { slug } = req.params;
@@ -307,30 +330,27 @@ export const freeEnrollment = async (req, res) => {
 };
 
 export const paidEnrollment = async (req, res) => {
-    console.log("En construccion");
-};
-
-export const stripeSuccess = async (req, res) => {
     try {
         const course = await Course.findById(req.params.courseId).exec();
-        const user = await User.findById(req.user._id).exec();
-        if (!user.stripeSession.id) return res.sendStatus(400);
-        const session = await stripe.checkout.sessions.retrieve(
-            user.stripeSession.id
-        );
-        console.log("ÉXITO EN STRIPE", session);
-        if (session.payment_status === "paid") {
-            await User.findByIdAndUpdate(user._id, {
+        const result = await User.findByIdAndUpdate(
+            req.user._id,
+            {
                 $addToSet: { courses: course._id },
-                $set: { stripeSession: {} },
-            }).exec();
-        }
-        res.json({ success: true, course });
+            },
+            { new: true }
+        ).exec();
+        console.log(result);
+        res.json({
+            message: `Te has matriculado al curso de ${course.name}`,
+            course,
+        });
     } catch (err) {
-        console.log("Error al completar el pago en Stripe", err);
-        res.json({ success: false });
+        console.log("Error al crear la matrícula pagada", err);
+        return res.status(400).send("Error al crear la matrícula");
     }
 };
+
+
 
 export const userCourses = async (req, res) => {
     const user = await User.findById(req.user._id).exec();
@@ -338,4 +358,54 @@ export const userCourses = async (req, res) => {
         .populate("instructor", "_id name")
         .exec();
     res.json(courses);
+};
+
+export const markCompleted = async (req, res) => {
+    const { courseId, lessonId } = req.body;
+    console.log("Course ID: ", courseId);
+    console.log("Lesson ID: ", lessonId);
+
+    const existing = await Completed.findOne({ user: req.user._id, course: courseId }).exec(); // NOSONAR
+
+    if (existing) {
+        const updated = await Completed.findOneAndUpdate({ user: req.user._id, course: courseId }, { $addToSet: { lessons: lessonId } }).exec(); // NOSONAR
+
+        console.log(updated);
+        res.json({ ok: true });
+    }
+    else {
+        const created = await new Completed({
+            user: req.user._id,
+            course: courseId,
+            lessons: lessonId,
+        }).save();
+        console.log(created);
+        res.json({ ok: true });
+
+    }
+};
+
+export const listCompleted = async (req, res) => {
+
+    try {
+        const list = await Completed.findOne({ user: req.user._id, course: req.body.courseId }).exec(); // NOSONAR
+        list && res.json(list.lessons);
+    }
+    catch (err) {
+        console.log(err);
+    }
+
+};
+
+export const markIncomplete = async (req, res) => {
+    try {
+        const { courseId, lessonId } = req.body;
+        const updated = await Completed.findOneAndUpdate({ user: req.user._id, course: courseId }, { $pull: { lessons: lessonId } }).exec(); // NOSONAR
+        console.log(updated);
+        res.json({ ok: true });
+
+    }
+    catch (err) {
+        console.log(err);
+    }
 };

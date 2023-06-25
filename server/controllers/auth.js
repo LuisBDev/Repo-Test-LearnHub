@@ -13,11 +13,12 @@ const awsConfig = {
 
 const SES = new AWS.SES(awsConfig);
 
+// Función para registrar un nuevo usuario
 export const register = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-    // Validación
+    // Validación de campos obligatorios
     if (!name) {
       return res.status(400).send("El nombre es obligatorio");
     }
@@ -27,15 +28,16 @@ export const register = async (req, res) => {
         .send("La contraseña es obligatoria y debe tener al menos 6 caracteres");
     }
 
+    // Verificar si el correo electrónico ya está en uso
     const userExist = await User.findOne({ email }).exec(); // NOSONAR
     if (userExist) {
       return res.status(400).send("El correo electrónico ya está en uso");
     }
 
-    // Encriptar contraseña
+    // Encriptar la contraseña
     const hashedPassword = await hashPassword(password);
 
-    // Registrar usuario
+    // Registrar el usuario en la base de datos
     const user = new User({
       name,
       email,
@@ -50,6 +52,7 @@ export const register = async (req, res) => {
   }
 };
 
+// Función para iniciar sesión
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -67,7 +70,7 @@ export const login = async (req, res) => {
       return res.status(400).send("Contraseña incorrecta");
     }
 
-    // Crear JWT firmado
+    // Crear un JSON Web Token (JWT) firmado
     const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "7d",
     });
@@ -89,6 +92,7 @@ export const login = async (req, res) => {
   }
 };
 
+// Función para cerrar sesión
 export const logout = async (req, res) => {
   try {
     res.clearCookie("token");
@@ -98,6 +102,7 @@ export const logout = async (req, res) => {
   }
 };
 
+// Función para obtener el usuario actual
 export const currentUser = async (req, res) => {
   try {
     const user = await User.findById(req.user._id).select("-password").exec();
@@ -108,6 +113,7 @@ export const currentUser = async (req, res) => {
   }
 };
 
+// Función para solicitar el restablecimiento de contraseña
 export const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
@@ -159,13 +165,14 @@ export const forgotPassword = async (req, res) => {
   }
 };
 
+// Función para restablecer la contraseña
 export const resetPassword = async (req, res) => {
   try {
     const { email, code, newPassword } = req.body;
     const hashedPassword = await hashPassword(newPassword);
 
-    const user = User.findOneAndUpdate({ email, passwordResetCode: code, }, { password: hashedPassword, passwordResetCode: "", }).exec(); // NOSONAR
-
+    const user = User.findOneAndUpdate({ email, passwordResetCode: code }, { password: hashedPassword, passwordResetCode: "" }).exec(); // NOSONAR
+    console.log(user);
     res.json({ ok: true });
   } catch (err) {
     console.log(err);

@@ -15,6 +15,7 @@ import {
     uploadVideo,
     removeVideo,
     addLesson,
+    addQuestion,
     update,
     removeLesson,
     updateLesson,
@@ -25,6 +26,10 @@ import {
     freeEnrollment,
     paidEnrollment,
     userCourses,
+    markCompleted,
+    listCompleted,
+    markIncomplete,
+
 } from "../controllers/course";
 
 router.get("/courses", courses);
@@ -43,18 +48,17 @@ router.post(
 );
 router.post("/course/video-remove/:instructorId", requireSignin, removeVideo);
 
+
 // publicar / despublicar curso
 router.put("/course/publish/:courseId", requireSignin, publishCourse);
 router.put("/course/unpublish/:courseId", requireSignin, unpublishCourse);
 
 // `/api/course/lesson/${slug}/${course.instructor._id}`,
 router.post("/course/lesson/:slug/:instructorId", requireSignin, addLesson);
+router.post("/course/question/:slug/:instructorId", requireSignin, addQuestion);
+
 // NOSONAR
-
-
-
-
-router.put("/course/lesson/:slug/:instructorId", requireSignin, updateLesson); // NOSONAR
+router.put("/course/lesson/:slug/:instructorId", requireSignin, updateLesson);
 
 router.put("/course/:slug/:lessonId", requireSignin, removeLesson);
 
@@ -67,5 +71,19 @@ router.post("/paid-enrollment/:courseId", requireSignin, paidEnrollment);
 
 router.get("/user-courses", requireSignin, userCourses);
 router.get("/user/course/:slug", requireSignin, isEnrolled, read);
+
+
+//marcar como completado, markCompleted
+router.post("/mark-completed", requireSignin, markCompleted);
+
+//list-completed
+router.post("/list-completed", requireSignin, listCompleted);
+
+//list-incompleted
+router.post("/mark-incomplete", requireSignin, markIncomplete);
+// NOSONAR
+
+
+
 
 module.exports = router;

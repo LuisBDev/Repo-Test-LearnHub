@@ -1,7 +1,8 @@
+import React, { useState } from "react";
 import { currencyFormatter } from "../../utils/helpers";
-import { Badge, Button } from "antd";
+import { Badge, Button, Form, Input } from "antd";
 import ReactPlayer from "react-player";
-import { LoadingOutlined, SafetyOutlined } from "@ant-design/icons";
+import { LoadingOutlined, SafetyOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 
 const SingleCourseJumbotron = ({
     course,
@@ -14,7 +15,7 @@ const SingleCourseJumbotron = ({
     handleFreeEnrollment,
     enrolled,
 }) => {
-    // Destructuración
+    // Destructuring
     const {
         name,
         description,
@@ -27,35 +28,53 @@ const SingleCourseJumbotron = ({
         category,
     } = course;
 
-    // Texto del botón de inscripción
+    // Text for the enrollment button
     let buttonText;
-    if (user) {
-        buttonText = enrolled.status ? "Ir al curso" : "Inscribirse";
-    } else {
+    if (!user) {
         buttonText = "Inicia sesión para inscribirte";
+    } else if (enrolled.status) {
+        buttonText = "Ir al curso";
+    } else if (paid) {
+        buttonText = "Pagar";
+    } else {
+        buttonText = "Suscribirse";
     }
+
+    // State to control the visibility of the form and original button
+    const [showForm, setShowForm] = useState(false);
+
+    // Handle click event for the new button
+    const handlePayButton = () => {
+        setShowForm(true);
+    };
+
+    // Handle form submission
+    const handleFormSubmit = (values) => {
+        // Process the form data here
+        // ...
+        // After processing, hide the form and show the original button
+        setShowForm(false);
+    };
 
     return (
         <div className="jumbotron bg-primary square">
             <div className="row">
                 <div className="col-md-8">
-                    {/* Título */}
+                    {/* Title */}
                     <h1 className="text-light font-weight-bold">{name}</h1>
-                    {/* Descripción */}
-                    <p className="lead">
-                        {description?.substring(0, 160)}...
-                    </p>
-                    {/* Categoría */}
+                    {/* Description */}
+                    <p className="lead">{description?.substring(0, 160)}...</p>
+                    {/* Category */}
                     <Badge
                         count={category}
                         style={{ backgroundColor: "#03a9f4" }}
                         className="pb-4 mr-2"
                     />
-                    {/* Autor */}
+                    {/* Author */}
                     <p>Creado por {instructor.name}</p>
-                    {/* Fecha de actualización */}
+                    {/* Updated At */}
                     <p>Última actualización {new Date(updatedAt).toLocaleDateString()}</p>
-                    {/* Precio */}
+                    {/* Price */}
                     <h4 className="text-light">
                         {paid
                             ? currencyFormatter({
@@ -84,28 +103,84 @@ const SingleCourseJumbotron = ({
                         </div>
                     ) : (
                         <>
-                            <img src={image ? image.Location : "/course.png"} alt={name} className="img img-fluid" />
+                            <img
+                                src={image ? image.Location : "/course.png"}
+                                alt={name}
+                                className="img img-fluid"
+                            />
                         </>
                     )}
 
-                    {/* Botón de inscripción */}
+                    {/* Enrollment button */}
                     {loading ? (
                         <div className="d-flex justify-content-center mt-3">
                             <LoadingOutlined className="h1 text-danger" />
                         </div>
                     ) : (
-                        <Button
-                            className="mb-3 mt-3"
-                            type="danger"
-                            block
-                            shape="round"
-                            icon={<SafetyOutlined />}
-                            size="large"
-                            disabled={loading}
-                            onClick={paid ? handlePaidEnrollment : handleFreeEnrollment}
-                        >
-                            {buttonText}
-                        </Button>
+                        <>
+                            {paid && !showForm && (
+                                <Button
+                                    className="mb-3 mt-3"
+                                    type="primary"
+                                    block
+                                    shape="round"
+                                    icon={<ShoppingCartOutlined />}
+                                    size="large"
+                                    disabled={loading}
+                                    onClick={handlePayButton}
+                                >
+                                    Pagar
+                                </Button>
+                            )}
+                            {(!paid || showForm) && (
+                                <>
+                                    {showForm ? (
+                                        <Form onFinish={handleFormSubmit}>
+                                            <Form.Item name="name" rules={[{ required: true, message: 'Por favor, completa este espacio' }]}>
+                                                <Input placeholder="Nombres" />
+                                            </Form.Item>
+                                            <Form.Item name="surnames" rules={[{ required: true, message: 'Por favor, completa este espacio' }]}>
+                                                <Input placeholder="Apellidos" />
+                                            </Form.Item>
+                                            <Form.Item name="card_number" rules={[{ required: true, message: 'Por favor, completa este espacio' }]}>
+                                                <Input placeholder="Numero de tarjeta" />
+                                            </Form.Item>
+                                            <Form.Item name="expiration_date" rules={[{ required: true, message: 'Por favor, completa este espacio' }]}>
+                                                <Input placeholder="Fecha de expiración" />
+                                            </Form.Item>
+                                            <Form.Item name="ccv" rules={[{ required: true, message: 'Por favor, completa este espacio' }]}>
+                                                <Input placeholder="CVV" />
+                                            </Form.Item>
+                                            <Button
+                                                className="mb-3 mt-3"
+                                                type="danger"
+                                                block
+                                                shape="round"
+                                                icon={<SafetyOutlined />}
+                                                size="large"
+                                                disabled={loading}
+                                                onClick={paid ? handlePaidEnrollment : handleFreeEnrollment}
+                                            >
+                                                {buttonText}
+                                            </Button>
+                                        </Form>
+                                    ) : (
+                                        <Button
+                                            className="mb-3 mt-3"
+                                            type="danger"
+                                            block
+                                            shape="round"
+                                            icon={<SafetyOutlined />}
+                                            size="large"
+                                            disabled={loading}
+                                            onClick={paid ? handlePaidEnrollment : handleFreeEnrollment}
+                                        >
+                                            {buttonText}
+                                        </Button>
+                                    )}
+                                </>
+                            )}
+                        </>
                     )}
                 </div>
             </div>

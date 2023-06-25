@@ -28,6 +28,36 @@ const lessonSchema = new mongoose.Schema(
     { timestamps: true }
 );
 
+const questionSchema = new mongoose.Schema(
+    {
+        title: {
+            type: String,
+            trim: true,
+            minlength: 3,
+            maxlength: 320,
+            required: true,
+        },
+        slug: {
+            type: String,
+            lowercase: true,
+        },
+        content: {
+            type: {},
+            minlength: 200,
+        },
+        answer: {
+            type: String, // Tipo de datos de la respuesta (puedes ajustarlo según tus necesidades)
+            required: true,
+        },
+        options: {
+            type: [String], // Tipo de datos de las opciones de respuesta (puedes ajustarlo según tus necesidades)
+            required: true,
+        },
+    },
+    { timestamps: true }
+);
+
+
 const courseSchema = new mongoose.Schema(
     {
         name: {
@@ -66,6 +96,7 @@ const courseSchema = new mongoose.Schema(
             required: true,
         },
         lessons: [lessonSchema],
+        questions: [questionSchema],
     },
     { timestamps: true }
 );

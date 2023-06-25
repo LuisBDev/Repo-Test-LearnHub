@@ -12,17 +12,32 @@ import {
 } from "@ant-design/icons";
 import ReactMarkdown from "react-markdown";
 import AddLessonForm from "../../../../components/forms/AddLessonForm";
+import AddQuestionForm from "../../../../components/forms/AddQuestionForm";
 import { toast } from "react-toastify";
 
 const CourseView = () => {
     const [course, setCourse] = useState({});
     const [visible, setVisible] = useState(false);
+    const [visibleQuestion, setVisibleQuestion] = useState(false);
     const [values, setValues] = useState({
         title: "",
         content: "",
         video: {},
     });
+
+    const [valuesQuestion, setValuesQuestion] = useState({
+        title: "",
+        content: "",
+        answer: "", // Nueva propiedad para almacenar la respuesta correcta
+        options: ["", "", "", ""] // Nueva propiedad para almacenar las opciones de respuesta
+    });
+
+
     const [uploading, setUploading] = useState(false);
+
+    const [uploadingQuestion] = useState(false);
+
+
     const [uploadButtonText, setUploadButtonText] = useState("Subir Video");
     const [progress, setProgress] = useState(0);
 
@@ -54,6 +69,23 @@ const CourseView = () => {
         } catch (err) {
             console.log(err);
             toast("Error al agregar la lección");
+        }
+    };
+
+    const handleAddQuestion = async (e) => {
+        e.preventDefault();
+        try {
+            const { data } = await axios.post(
+                `/api/course/question/${slug}/${course.instructor._id}`,
+                valuesQuestion
+            );
+            setValuesQuestion({ title: "", content: "", answer: "", options: ["", "", "", ""] });
+            setVisibleQuestion(false);
+            console.log(data.questions);
+            toast("Pregunta agregada");
+        } catch (err) {
+            console.log(err);
+            toast("Error al agregar la pregunta");
         }
     };
 
@@ -169,6 +201,16 @@ const CourseView = () => {
         </List.Item>
     ));
 
+    const questionList = course?.questions?.map((item) => (
+        <List.Item key={item.title}>
+            <List.Item.Meta
+                avatar={<Avatar>{item.title.substring(0, 1)}</Avatar>}
+                title={item.title}
+            ></List.Item.Meta>
+        </List.Item>
+    ));
+
+
     return (
         <InstructorRoute>
             <div className="container-fluid pt-3">
@@ -225,6 +267,21 @@ const CourseView = () => {
                                 Agregar Lección
                             </Button>
                         </div>
+                        {/* Botón agregar preguntas */}
+                        <br />
+                        <div className="row">
+                            <Button
+                                onClick={() => setVisibleQuestion(true)}
+                                className="col-md-6 offset-md-3 text-center"
+                                type="primary"
+                                shape="round"
+                                icon={<UploadOutlined />}
+                                size="large"
+                            >
+                                Agregar Evaluación
+                            </Button>
+                        </div>
+
 
                         <br />
 
@@ -247,6 +304,25 @@ const CourseView = () => {
                             />
                         </Modal>
 
+                        {/* Inicio Modal Preguntas */}
+                        <Modal
+                            title="+ Agregar Evaluación"
+                            centered
+                            visible={visibleQuestion}
+                            onCancel={() => setVisibleQuestion(false)}
+                            footer={null}
+                        >
+
+                            <AddQuestionForm
+                                valuesQuestion={valuesQuestion}
+                                setValuesQuestion={setValuesQuestion}
+                                handleAddQuestion={handleAddQuestion}
+                                uploading={uploadingQuestion}
+                            />
+
+                        </Modal>
+                        {/* Fin Modal Preguntas */}
+
                         <div className="row pb-5">
                             <div className="col lesson-list">
                                 <h4>{course?.lessons?.length} Lecciones</h4>
@@ -255,6 +331,18 @@ const CourseView = () => {
                                 </List>
                             </div>
                         </div>
+
+                        <div className="row pb-5">
+                            <div className="col question-list">
+                                <h4>{course?.questions?.length} Evaluaciones </h4>
+                                <List itemLayout="horizontal" dataSource={course?.questions}>
+                                    {questionList}
+                                </List>
+                            </div>
+                        </div>
+
+
+
                     </div>
                 )}
             </div>

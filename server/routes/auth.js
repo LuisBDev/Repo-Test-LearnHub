@@ -4,8 +4,6 @@ import { requireSignin } from "../middlewares";
 
 const router = express.Router();
 
-// middleware
-
 // controllers
 import {
     register,
