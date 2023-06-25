@@ -28,18 +28,6 @@ const SingleCourseJumbotron = ({
         category,
     } = course;
 
-    // Text for the enrollment button
-    let buttonText;
-    if (!user) {
-        buttonText = "Inicia sesión para inscribirte";
-    } else if (enrolled.status) {
-        buttonText = "Ir al curso";
-    } else if (paid) {
-        buttonText = "Pagar";
-    } else {
-        buttonText = "Suscribirse";
-    }
-
     // State to control the visibility of the form and original button
     const [showForm, setShowForm] = useState(false);
 
@@ -55,6 +43,21 @@ const SingleCourseJumbotron = ({
         // After processing, hide the form and show the original button
         setShowForm(false);
     };
+
+    // Determine the enrollment button text
+    const getButtonText = () => {
+        if (!user) {
+            return "Inicia sesión para inscribirte";
+        } else if (enrolled.status) {
+            return "Ir al curso";
+        } else if (paid) {
+            return "Pagar";
+        } else {
+            return "Suscribirse";
+        }
+    };
+
+    const buttonText = getButtonText();
 
     return (
         <div className="jumbotron bg-primary square">
