@@ -92,12 +92,12 @@ const AddQuestionForm = ({
 
         <h4>Opciones de respuesta:</h4>
         {valuesQuestion.options.map((option, index) => (
-          <div key={index}>
+          <div key={option.id}>
             <Radio.Group
               onChange={(e) => handleChangeAnswer(e)}
               value={valuesQuestion.answer.toString()} // Convertir a cadena
             >
-              <Radio value={index.toString()}>{option}</Radio> // Convertir a cadena
+              <Radio value={index.toString()}>{option}</Radio>
             </Radio.Group>
             <Input
               type="text"
