@@ -1,15 +1,7 @@
-// Importación del módulo currencyFormatter desde la ruta relativa "../../utils/helpers"
 import { currencyFormatter } from "../../utils/helpers";
-
-// Importación de los módulos Badge y Button desde el paquete "antd"
 import { Badge, Button } from "antd";
-
-// Importación del componente ReactPlayer desde el paquete "react-player"
 import ReactPlayer from "react-player";
-
-// Importación de los iconos LoadingOutlined y SafetyOutlined desde el paquete "@ant-design/icons"
 import { LoadingOutlined, SafetyOutlined } from "@ant-design/icons";
-
 
 const SingleCourseJumbotron = ({
     course,
@@ -36,23 +28,16 @@ const SingleCourseJumbotron = ({
     } = course;
 
     // Texto del botón de inscripción
-    // Definimos una variable para almacenar el texto del botón
     let buttonText;
-    
-    // Comprobamos si el usuario está definido o no
     if (!user) {
-        // Si el usuario no está definido, establecemos el texto del botón como "Inicia sesión para inscribirte"
         buttonText = "Inicia sesión para inscribirte";
-    } else if (enrolled.status) {
-        // Si el usuario está definido y su estado de matriculación es verdadero, establecemos el texto del botón como "Ir al curso"
+      } else if (enrolled.status) {
         buttonText = "Ir al curso";
-    } else if (paid) {
-        // Si el usuario está definido, pero no está matriculado y ha pagado, establecemos el texto del botón como "Pagar"
+      } else if (paid) {
         buttonText = "Pagar";
-    } else {
-        // Si el usuario está definido, no está matriculado ni ha pagado, establecemos el texto del botón como "Suscribirse"
+      } else {
         buttonText = "Suscribirse";
-    }
+      }
 
     return (
         <div className="jumbotron bg-primary square">

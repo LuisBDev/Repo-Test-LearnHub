@@ -1,9 +1,5 @@
-// Importamos los componentes Button, Progress y Tooltip de la biblioteca "antd"
 import { Button, Progress, Tooltip } from "antd";
-
-// Importamos el icono CloseCircleFilled de la biblioteca "@ant-design/icons"
 import { CloseCircleFilled } from "@ant-design/icons";
-
 
 const AddLessonForm = ({
     values,

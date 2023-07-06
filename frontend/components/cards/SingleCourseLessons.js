@@ -1,9 +1,5 @@
-// Importamos los componentes List y Avatar desde la librería "antd".
 import { List, Avatar } from "antd";
-
-// Extraemos el componente Item del objeto List para poder usarlo directamente.
 const { Item } = List;
-
 
 const SingleCourseLessons = ({
   lessons,
